@@ -1,0 +1,8 @@
+*.py[co]
+*.tac
+*.log
+*.pid
+state.sqlite
+config.json
+gitpoller/
+workers/

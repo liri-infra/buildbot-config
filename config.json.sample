@@ -1,0 +1,9 @@
+{
+    "buildbot-port": 8010,
+    "buildbot-uri": "http://localhost:8010/",
+    "num-master-workers": 4,
+    "admin-password": "test",
+    "github-auth-client": "",
+    "github-auth-secret": "",
+    "docker-hub-triggers": []
+}
