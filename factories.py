@@ -63,13 +63,7 @@ class ArchLinuxBuildStep(steps.BuildStep, CompositeStepMixin):
             self.build.addStepsAfterCurrentStep([
                 steps.ShellCommand(
                     name='build ' + name,
-                    command=[
-                        'sudo', 'docker', 'run', '-i', '--rm',
-                        '-v', '%s:/build' % os.path.join(builddir, self.workdir, name),
-                        '-v', '/srv/www/repo.liri.io/archlinux/unstable/x86_64:/repo',
-                        '-v', '%s/docker-build:/build.sh' % os.path.join(builddir, self.workdir),
-                        '--workdir', '/build', 'liridev/buildbot-archlinux', '/build.sh'
-                    ],
+                    command=['../docker-build'],
                     workdir=os.path.join(self.workdir, name),
                 )
             ])
