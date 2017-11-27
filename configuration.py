@@ -10,7 +10,7 @@ class Configuration(object):
         try:
             f = open('config.json', 'r')
         except IOError:
-            f = open('/var/lib/buildbot/config.json', 'r')
+            f = open('/var/lib/buildbot/liribotcfg/config.json', 'r')
         self._config = utils.json_to_ascii(json.loads(f.read ()))
 
     def _get_config(self, name, default=""):
