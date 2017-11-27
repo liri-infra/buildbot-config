@@ -13,3 +13,16 @@ ln -s liribotcfg/master.cfg
 ```
 
 The deployment is like [metabotcfg](https://github.com/buildbot/metabbotcfg).
+
+## Deployment
+
+Create a directory, create `config.json` inside it and then
+run the container:
+
+```sh
+# from the directory with config.json in it
+sudo docker run -i -t --rm \
+    -v .:/var/lib/buildbot/settings:ro \
+    -e BUILDBOT_CONFIG_URL=https://github.com/lirios/buildbot-config/archive/master.tar.gz \
+    -e BUILDBOT_CONFIG_DIR=liribotcfg buildbot/buildbot-master
+```
