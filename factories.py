@@ -10,7 +10,6 @@ from twisted.internet import defer
 
 import buildbot
 import os.path
-import yaml
 
 def shellArgOptional(commands):
     return util.ShellArg(logfile='stdio', command=commands)
@@ -52,11 +51,11 @@ class ArchLinuxBuildStep(steps.BuildStep, CompositeStepMixin):
     @defer.inlineCallbacks
     def run(self):
         builddir = self.build.properties.getProperty('builddir')
-        content = yield self.getFileContentFromWorker('channel.yml')
+        content = yield self.getFileContentFromWorker('channels.json')
         if content is None:
             channels = {'stable': [], 'unstable': []}
         else:
-            channels = yaml.load(content)
+            channels = utils.json_to_ascii(json.loads(content))
         for name in channels['unstable']:
             self.build.addStepsAfterCurrentStep([
                 steps.ShellCommand(
