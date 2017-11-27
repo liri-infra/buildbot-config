@@ -10,6 +10,7 @@ from twisted.internet import defer
 
 import buildbot
 import os.path
+import json
 
 from liribotcfg import utils
 
