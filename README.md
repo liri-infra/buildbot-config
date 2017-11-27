@@ -22,7 +22,7 @@ run the container:
 ```sh
 # from the directory with config.json in it
 sudo docker run -i -t --rm \
-    -v .:/var/lib/buildbot/settings:ro \
+    -v $(pwd):/var/lib/buildbot/settings:ro \
     -e BUILDBOT_CONFIG_URL=https://github.com/lirios/buildbot-config/archive/master.tar.gz \
     -e BUILDBOT_CONFIG_DIR=liribotcfg buildbot/buildbot-master
 ```
