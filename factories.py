@@ -11,6 +11,8 @@ from twisted.internet import defer
 import buildbot
 import os.path
 
+from liribotcfg import utils
+
 def shellArgOptional(commands):
     return util.ShellArg(logfile='stdio', command=commands)
 
