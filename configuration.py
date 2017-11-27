@@ -1,14 +1,14 @@
 # -*- python -*-
 # ex: set filetype=python:
 
-from utils import json_to_ascii
+from liribotcfg import utils
 
 import json
 
 class Configuration(object):
     def __init__(self):
         f = open('config.json', 'r')
-        self._config = json_to_ascii(json.loads(f.read ()))
+        self._config = utils.json_to_ascii(json.loads(f.read ()))
 
     def _get_config(self, name, default=""):
         return self._config.get(name, default)
