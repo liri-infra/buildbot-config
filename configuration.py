@@ -32,6 +32,10 @@ class Configuration(object):
         return self._get_config('num-master-workers', 4)
 
     @property
+    def admin_username(self):
+        return self._get_config('admin-username')
+
+    @property
     def admin_password(self):
         return self._get_config('admin-password')
 
