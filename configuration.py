@@ -1,7 +1,7 @@
 # -*- python -*-
 # ex: set filetype=python:
 
-from .utils import json_to_ascii
+from utils import json_to_ascii
 
 import json
 
