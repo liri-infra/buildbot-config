@@ -128,8 +128,7 @@ class ArchISOBuildFactory(util.BuildFactory):
             ),
             steps.ShellCommand(
                 name='remove old images',
-                haltOnFailure=True,
-                command=['find', '/repo/images/nightly', '-type', 'f', '-ctime', '+7', '-exec', 'rm', '-f', '{}', '\\;'],
+                command=['sudo', 'find', '/repo/images/nightly', '-type', 'f', '-ctime', '+7', '-exec', 'rm', '-f', '{}', '\\;'],
             ),
         ])
 
