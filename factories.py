@@ -123,6 +123,12 @@ class ArchPackagesBuildFactory(util.BuildFactory):
                 shallow=True,
             ),
             ArchLinuxBuildStep(name='select packages'),
+            steps.POST(
+                name='trigger rebuild lirios/unstable',
+                url='https://registry.hub.docker.com/u/lirios/unstable/trigger/9b83357b-10ff-4c61-9665-9f203e2cc793/',
+                headers={'Content-type': 'application/json'},
+                data={'build': True}
+            )
         ])
 
 
