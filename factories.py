@@ -136,6 +136,7 @@ class DockerHubBuildFactory(util.BuildFactory):
     """
     def __init__(self, triggers, tags, *args, **kwargs):
         util.BuildFactory.__init__(self, *args, **kwargs)
+        steps = []
         for info in triggers:
             build = False
             available_tags = info.get('tags', [])
@@ -144,4 +145,6 @@ class DockerHubBuildFactory(util.BuildFactory):
                     build = True
             if build is True:
                 url = 'https://registry.hub.docker.com/u/%(name)s/trigger/%(token)s/' % info
-                self.addStep(steps.POST(name='trigger rebuild %(name)s' % info, url=url, headers={'Content-type': 'application/json'}, data={'build': True}))
+                steps.append(steps.POST(name='trigger rebuild %(name)s' % info, url=url, headers={'Content-type': 'application/json'}, data={'build': True}))
+        if len(steps) > 0:
+            self.addSteps(steps)
