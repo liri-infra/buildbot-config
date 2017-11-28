@@ -85,20 +85,19 @@ class ArchISOBuildStep(steps.BuildStep, CompositeStepMixin):
             steps.ShellCommand(
                 name='build image',
                 haltOnFailure=True,
-                command=['./build.sh', '-v'],
+                command=['sudo', './build.sh', '-v'],
                 workdir=os.path.join(self.workdir, 'livecd'),
             ),
             steps.ShellCommand(
                 name='move image',
                 haltOnFailure=True,
-                command=[
-                    'mv', '%s/livecd/out/lirios-*.iso*' % os.path.join(builddir, self.workdir),
-                    '/repo/images/nightly/'
-                ],
+                command=['sudo', 'mv', 'out/lirios-*.iso*', '/repo/images/nightly/'],
+                workdir=os.path.join(self.workdir, 'livecd'),
             ),
             steps.ShellCommand(
                 name='clean up',
-                command=['rm', '-rf', 'livecd/work', 'livecd/out'],
+                command=['sudo', 'rm', '-rf', 'work', 'out'],
+                workdir=os.path.join(self.workdir, 'livecd'),
             ),
         ])
         return buildbot.process.results.SUCCESS
