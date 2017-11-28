@@ -63,6 +63,7 @@ class ArchLinuxBuildStep(steps.BuildStep, CompositeStepMixin):
             self.build.addStepsAfterCurrentStep([
                 steps.ShellCommand(
                     name='build ' + name,
+                    haltOnFailure=True,
                     command=['../docker-build'],
                     workdir=os.path.join(self.workdir, name),
                 )
@@ -84,11 +85,8 @@ class ArchISOBuildStep(steps.BuildStep, CompositeStepMixin):
             steps.ShellCommand(
                 name='build image',
                 haltOnFailure=True,
-                command=[
-                    'sudo', 'docker', 'run', '--privileged', '-i', '--rm',
-                    '-v', '%s/livecd:/livecd' % os.path.join(builddir, self.workdir),
-                    '--workdir', '/livecd', 'liridev/archlinux-base', './build.sh', '-v'
-                ],
+                command=['./build.sh', '-v'],
+                workdir=os.path.join(self.workdir, 'livecd'),
             ),
             steps.ShellCommand(
                 name='move image',
