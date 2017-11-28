@@ -118,18 +118,12 @@ class ArchISOBuildFactory(util.BuildFactory):
             steps.ShellCommand(
                 name='build image',
                 haltOnFailure=True,
-                command=['sudo', './build.sh', '-v'],
-                workdir=os.path.join(self.workdir, 'livecd'),
-            ),
-            steps.ShellCommand(
-                name='move image',
-                haltOnFailure=True,
-                command=['sudo', 'mv', 'out/lirios-*.iso*', '/repo/images/nightly/'],
+                command=['sudo', './build.sh', '-v', '-o', '/repo/images/nightly/'],
                 workdir=os.path.join(self.workdir, 'livecd'),
             ),
             steps.ShellCommand(
                 name='clean up',
-                command=['sudo', 'rm', '-rf', 'work', 'out'],
+                command=['sudo', 'rm', '-rf', 'work'],
                 workdir=os.path.join(self.workdir, 'livecd'),
             ),
             steps.ShellCommand(
