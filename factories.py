@@ -71,38 +71,6 @@ class ArchLinuxBuildStep(steps.BuildStep, CompositeStepMixin):
         defer.returnValue(buildbot.process.results.SUCCESS)
 
 
-class ArchISOBuildStep(steps.BuildStep, CompositeStepMixin):
-    """
-    Build step to build the ArchLinux ISO images.
-    """
-
-    def __init__(self, triggers=None, **kwargs):
-        steps.BuildStep.__init__(self, haltOnFailure=True, **kwargs)
-
-    def run(self):
-        builddir = self.build.properties.getProperty('builddir')
-        self.build.addStepsAfterCurrentStep([
-            steps.ShellCommand(
-                name='build image',
-                haltOnFailure=True,
-                command=['sudo', './build.sh', '-v'],
-                workdir=os.path.join(self.workdir, 'livecd'),
-            ),
-            steps.ShellCommand(
-                name='move image',
-                haltOnFailure=True,
-                command=['sudo', 'mv', 'out/lirios-*.iso*', '/repo/images/nightly/'],
-                workdir=os.path.join(self.workdir, 'livecd'),
-            ),
-            steps.ShellCommand(
-                name='clean up',
-                command=['sudo', 'rm', '-rf', 'work', 'out'],
-                workdir=os.path.join(self.workdir, 'livecd'),
-            ),
-        ])
-        return buildbot.process.results.SUCCESS
-
-
 class ArchPackagesBuildFactory(util.BuildFactory):
     """
     Build factory for ArchLinux packages.
@@ -147,7 +115,23 @@ class ArchISOBuildFactory(util.BuildFactory):
                 submodules=True,
                 shallow=True,
             ),
-            ArchISOBuildStep(name='build'),
+            steps.ShellCommand(
+                name='build image',
+                haltOnFailure=True,
+                command=['sudo', './build.sh', '-v'],
+                workdir=os.path.join(self.workdir, 'livecd'),
+            ),
+            steps.ShellCommand(
+                name='move image',
+                haltOnFailure=True,
+                command=['sudo', 'mv', 'out/lirios-*.iso*', '/repo/images/nightly/'],
+                workdir=os.path.join(self.workdir, 'livecd'),
+            ),
+            steps.ShellCommand(
+                name='clean up',
+                command=['sudo', 'rm', '-rf', 'work', 'out'],
+                workdir=os.path.join(self.workdir, 'livecd'),
+            ),
             steps.ShellCommand(
                 name='remove old images',
                 haltOnFailure=True,
