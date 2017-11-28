@@ -140,6 +140,14 @@ class ArchISOBuildFactory(util.BuildFactory):
     def __init__(self, *args, **kwargs):
         util.BuildFactory.__init__(self, *args, **kwargs)
         self.addSteps([
+            steps.Git(
+                name='checkout sources',
+                repourl=util.Property('repository'),
+                branch=util.Property('branch'),
+                mode='incremental',
+                submodules=True,
+                shallow=True,
+            ),
             ArchISOBuildStep(name='build'),
             steps.ShellCommand(
                 name='remove old images',
