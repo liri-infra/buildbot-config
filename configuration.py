@@ -48,5 +48,9 @@ class Configuration(object):
         return self._get_config('github-auth-secret')
 
     @property
+    def slack_reporter(self):
+        return self._get_config('slack-reporter', default={})
+
+    @property
     def docker_hub_triggers(self):
         return self._get_configv('docker_hub_triggers')
