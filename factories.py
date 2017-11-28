@@ -126,10 +126,6 @@ class ArchISOBuildFactory(util.BuildFactory):
                 command=['sudo', 'rm', '-rf', 'work'],
                 workdir=os.path.join(self.workdir, 'livecd'),
             ),
-            steps.ShellCommand(
-                name='remove old images',
-                command=['sudo', 'find', '/repo/images/nightly', '-type', 'f', '-ctime', '+7', '-exec', 'rm', '-f', '{}', '\\;'],
-            ),
         ])
 
 
