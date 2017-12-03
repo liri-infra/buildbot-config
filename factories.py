@@ -129,6 +129,27 @@ class ArchISOBuildFactory(util.BuildFactory):
         ])
 
 
+class OSTreeArchBuildFactory(util.BuildFactory):
+    """
+    Build factory that creates an Arch Linux ostree
+    branch and commits it.
+    """
+    def __init__(self, *args, **kwargs):
+        util.BuildFactory.__init__(self, *args, **kwargs)
+        self.addSteps([
+            steps.ShellCommand(
+                name='create rootfs',
+                haltOnFailure=True,
+                command=[
+                    'sudo', 'mkosi', '-d', 'arch', '-t', 'directory',
+                    '-p', 'mkinitcpio', '-p', 'grub', '-p', 'ostree',
+                    '--with-network', '--cache', 'cache', '-o', 'rootfs',
+                ],
+                workdir=self.workdir,
+            )
+        ])
+
+
 class DockerHubBuildFactory(util.BuildFactory):
     """
     Build factory that triggers a rebuild of the Docker
