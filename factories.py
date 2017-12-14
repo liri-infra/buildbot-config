@@ -83,6 +83,7 @@ class ArchPackagesBuildFactory(util.BuildFactory):
         self.addSteps([
             steps.Git(
                 name='checkout sources',
+                codebase=util.Property('codebase'),
                 repourl=util.Property('repository'),
                 branch=util.Property('branch'),
                 mode='incremental',
@@ -109,6 +110,7 @@ class ArchISOBuildFactory(util.BuildFactory):
         self.addSteps([
             steps.Git(
                 name='checkout sources',
+                codebase=util.Property('codebase'),
                 repourl=util.Property('repository'),
                 branch=util.Property('branch'),
                 mode='incremental',
