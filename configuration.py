@@ -53,4 +53,4 @@ class Configuration(object):
 
     @property
     def docker_hub_triggers(self):
-        return self._get_configv('docker_hub_triggers')
+        return self._get_configv('docker-hub-triggers')
