@@ -14,34 +14,6 @@ import json
 
 from liribotcfg import utils
 
-def shellArgOptional(commands):
-    return util.ShellArg(logfile='stdio', command=commands)
-
-
-def shellArg(commands):
-    return util.ShellArg(logfile='stdio', haltOnFailure=True, command=commands)
-
-
-# We create one worker lock per build-id, which is the same as the workdir
-# so multiple builds never work in the same workdir on any particular worker
-class BuildIDLockBuild(Build):
-    _workerLocks = {}
-
-    @staticmethod
-    def find_or_create_master_lock_for_buildid(buildid):
-        lock = BuildIDLockBuild._workerLocks.get(buildid)
-        if lock is None:
-            log.msg("********* Created lock for buildid %s" % buildid)
-            lock = locks.WorkerLock(buildid + ' buildid lock')
-            BuildIDLockBuild._workerLocks[buildid] = lock
-        return lock
-
-    def startBuild(self, build_status, workerforbuilder):
-        buildid = self.getProperty('liribuilder-build-id')
-        lock = BuildIDLockBuild.find_or_create_master_lock_for_buildid(buildid)
-        self.setLocks([lock.access('exclusive'), flatpak_worker_lock.access('counting')])
-        return Build.startBuild(self, build_status, workerforbuilder)
-
 
 class ArchLinuxBuildStep(steps.BuildStep, CompositeStepMixin):
     """
@@ -78,8 +50,6 @@ class ArchPackagesBuildFactory(util.BuildFactory):
 
     def __init__(self, *args, **kwargs):
         util.BuildFactory.__init__(self, *args, **kwargs)
-        #self.buildClass = BuildIDLockBuild
-        #self.workdir = util.Property('liribuilder-build-id')
         self.addSteps([
             steps.Git(
                 name='checkout sources',
