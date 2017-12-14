@@ -60,7 +60,7 @@ class ArchLinuxBuildStep(steps.BuildStep, CompositeStepMixin):
         else:
             channels = utils.json_to_ascii(json.loads(content))
         for name in channels['unstable']:
-            self.build.addStepsAfterCurrentStep([
+            self.build.addStepsAfterLastStep([
                 steps.ShellCommand(
                     name='build ' + name,
                     haltOnFailure=True,
