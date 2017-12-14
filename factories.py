@@ -60,7 +60,7 @@ class ArchPackagesBuildFactory(util.BuildFactory):
                 submodules=True,
                 shallow=True,
             ),
-            steps.ShellCommand(command=['repo-add', '/repo//liri-unstable.db.tar.gz']),
+            steps.ShellCommand(name='create database', command=['repo-add', '/repo//liri-unstable.db.tar.gz']),
             ArchLinuxBuildStep(name='select packages')
         ]
         for info in triggers:
