@@ -48,9 +48,9 @@ class ArchPackagesBuildFactory(util.BuildFactory):
     Build factory for ArchLinux packages.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, triggers, *args, **kwargs):
         util.BuildFactory.__init__(self, *args, **kwargs)
-        self.addSteps([
+        steps_list = [
             steps.Git(
                 name='checkout sources',
                 codebase=util.Property('codebase'),
@@ -60,14 +60,20 @@ class ArchPackagesBuildFactory(util.BuildFactory):
                 submodules=True,
                 shallow=True,
             ),
-            ArchLinuxBuildStep(name='select packages'),
-            steps.POST(
-                name='trigger rebuild lirios/unstable',
-                url='https://registry.hub.docker.com/u/lirios/unstable/trigger/9b83357b-10ff-4c61-9665-9f203e2cc793/',
-                headers={'Content-type': 'application/json'},
-                data={'build': True}
-            )
-        ])
+            ArchLinuxBuildStep(name='select packages')
+        ]
+        for info in triggers:
+            if 'packages' in info.get('tags', []):
+                url = 'https://registry.hub.docker.com/u/%(name)s/trigger/%(token)s/' % info
+                steps_list.append(
+                    steps.POST(
+                        name='trigger rebuild %(name)s' % info,
+                        url=url,
+                        headers={'Content-type': 'application/json'},
+                        data={'build': True}
+                    )
+                )
+        self.addSteps(steps_list)
 
 
 class ArchISOBuildFactory(util.BuildFactory):
