@@ -109,7 +109,7 @@ class ArchISOBuildFactory(util.BuildFactory):
             ),
             steps.ShellCommand(
                 name='remove old images',
-                command=[r'find /repo/images/nightly -mtime +7 -exec rm {} \;'],
+                command=['bash', '-c', 'find /repo/images/nightly -type f -mtime +7 -exec rm {} \;'],
             )
         ])
 
