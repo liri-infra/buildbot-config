@@ -6,3 +6,4 @@ state.sqlite
 config.json
 gitpoller/
 workers/
+.vscode/tags
