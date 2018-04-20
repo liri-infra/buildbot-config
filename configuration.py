@@ -54,3 +54,7 @@ class Configuration(object):
     @property
     def docker_hub_triggers(self):
         return self._get_configv('docker-hub-triggers')
+
+    @property
+    def flatpak_gpg_key(self):
+        return self._get_config('flatpak-gpg-key')

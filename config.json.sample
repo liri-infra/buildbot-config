@@ -10,5 +10,6 @@
         "url": "",
         "channel": "#events"
     },
-    "docker-hub-triggers": []
+    "docker-hub-triggers": [],
+    "flatpak-gpg-key": ""
 }
