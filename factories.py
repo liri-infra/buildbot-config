@@ -184,7 +184,8 @@ class OSTreeBuildStep(steps.BuildStep, CompositeStepMixin):
     """
     Creates the OSTree repo if needed.
     """
-    def __init__(self, **kwargs):
+    def __init__(self, treefile=None, **kwargs):
+        self.treefile = treefile
         steps.BuildStep.__init__(self, haltOnFailure=True, **kwargs)
 
     @defer.inlineCallbacks
@@ -202,7 +203,7 @@ class OSTreeBuildStep(steps.BuildStep, CompositeStepMixin):
                 initCmd = remotecommand.RemoteCommand('shell', {'command': cmd})
                 defer.returnValue(self.convertResult(initCmd))
         # Make tree
-        cmd = ['rpm-ostree', 'tree', '--repo=build-repo', '--cachedir=cache', 'lirios-unstable-desktop.json']
+        cmd = ['rpm-ostree', 'tree', '--repo=build-repo', '--cachedir=cache', self.treefile]
         makeCmd = remotecommand.RemoteCommand('shell', {'command': cmd})
         defer.returnValue(self.convertResult(makeCmd))
 
@@ -211,7 +212,10 @@ class OSTreeFactory(util.BuildFactory):
     """
     Build factory for rpm-ostree OS trees.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, channel=None, treename=None, arch=None, *args, **kwargs):
+        self.channel = channel
+        self.treename = treename
+        self.arch = arch
         util.BuildFactory.__init__(self, *args, **kwargs)
         self.addSteps([
             steps.ShellCommand(
@@ -228,7 +232,7 @@ class OSTreeFactory(util.BuildFactory):
                 submodules=True,
                 shallow=True,
             ),
-            OSTreeBuildStep(name='create OS tree'),
+            OSTreeBuildStep(name='create OS tree', treefile='lirios-{}-{}.json'.format(self.channel, self.treename)),
         ])
 
 
