@@ -131,7 +131,6 @@ class ImageBuildFactory(util.BuildFactory):
         imgname = '%s-%s-x86_64' % (product, today)
         isofilename = imgname + '.iso'
         checksumfilename = imgname + '-CHECKSUM'
-        kspath = '/tmp/livecd.ks'
 
         self.addSteps([
             steps.ShellCommand(
@@ -151,7 +150,7 @@ class ImageBuildFactory(util.BuildFactory):
             steps.ShellCommand(
                 name='ksflatten',
                 haltOnFailure=True,
-                command=['ksflatten', '--config=%s-livecd.ks' % product, '-o', kspath],
+                command=['ksflatten', '--config=%s-livecd.ks' % product, '-o', 'livecd.ks'],
             ),
 
             steps.ShellCommand(
@@ -159,7 +158,7 @@ class ImageBuildFactory(util.BuildFactory):
                 haltOnFailure=True,
                 command=[
                     'livecd-creator', '--releasever=' + releasever,
-                    '--config=' + kspath, '--fslabel=' + imgname,
+                    '--config=livecd.ks', '--fslabel=' + imgname,
                     '--title', title, '--product=' + product,
                     '--cache=cache'
                 ],
