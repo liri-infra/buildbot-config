@@ -131,7 +131,6 @@ class ImageBuildFactory(util.BuildFactory):
         imgname = '%s-%s-x86_64' % (product, today)
         isofilename = imgname + '.iso'
         checksumfilename = imgname + '-CHECKSUM'
-        cacherootdir = '/build/cache/lic'
         kspath = '/tmp/livecd.ks'
 
         self.addSteps([
@@ -154,19 +153,15 @@ class ImageBuildFactory(util.BuildFactory):
                 haltOnFailure=True,
                 command=['ksflatten', '--config=%s-livecd.ks' % product, '-o', kspath],
             ),
-            steps.ShellSequence(
+
+            steps.ShellCommand(
                 name='build image',
-                commands=[
-                  util.ShellArg(haltOnFailure=True, command=['mkdir', '-p', cacherootdir]),
-                  util.ShellArg(
-                      haltOnFailure=True,
-                      command=[
-                          'livecd-creator', '--releasever=' + releasever,
-                          '--config=' + kspath, '--fslabel=' + imgname,
-                          '--title', title, '--product=' + product,
-                          '--cache=%s/dnf' % cacherootdir
-                      ]
-                  ),
+                haltOnFailure=True,
+                command=[
+                    'livecd-creator', '--releasever=' + releasever,
+                    '--config=' + kspath, '--fslabel=' + imgname,
+                    '--title', title, '--product=' + product,
+                    '--cache=cache'
                 ],
             ),
             steps.ShellCommand(
