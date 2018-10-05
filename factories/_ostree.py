@@ -57,8 +57,8 @@ class OSTreeFactory(util.BuildFactory):
                 haltOnFailure=True,
                 logEnviron=False,
                 commands=[
-                    util.ShellArg(command=['dnf', 'update', '-y']),
-                    util.ShellArg(command=['dnf', 'install', '-y', 'git', 'rpm-ostree']),
+                    util.ShellArg(command=['dnf', 'update', '-y'], logfile='stdio'),
+                    util.ShellArg(command=['dnf', 'install', '-y', 'git', 'rpm-ostree'], logfile='stdio'),
                 ],
             ),
             steps.Git(
