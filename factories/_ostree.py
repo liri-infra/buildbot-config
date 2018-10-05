@@ -36,6 +36,8 @@ class OSTreeBuildStep(buildstep.ShellMixin, steps.BuildStep):
             defer.returnValue(buildbot.process.results.FAILURE)
             return
         # Make tree
+        mkdirCmd = yield self.makeRemoteShellCommand(command=['mkdir', '-p', '/build/cache'])
+        yield self.runCommand(mkdirCmd)
         cmd = ['rpm-ostree', 'compose', 'tree', '--repo=build-repo', '--cachedir=/build/cache', self.treefile]
         makeCmd = yield self.makeRemoteShellCommand(command=cmd)
         yield self.runCommand(makeCmd)
