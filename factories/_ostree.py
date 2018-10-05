@@ -52,11 +52,14 @@ class OSTreeFactory(util.BuildFactory):
         self.arch = arch
         util.BuildFactory.__init__(self, *args, **kwargs)
         self.addSteps([
-            steps.ShellCommand(
+            steps.ShellSequence(
                 name='install tools',
                 haltOnFailure=True,
                 logEnviron=False,
-                command=['dnf', 'install', '-y', 'git', 'rpm-ostree'],
+                commands=[
+                    util.ShellArg(command=['dnf', 'update', '-y']),
+                    util.ShellArg(command=['dnf', 'install', '-y', 'git', 'rpm-ostree']),
+                ],
             ),
             steps.Git(
                 name='checkout sources',
