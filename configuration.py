@@ -52,6 +52,10 @@ class Configuration(object):
         return self._get_config('slack-reporter', default={})
 
     @property
+    def docker_workers(self):
+        return self._get_config('docker-workers', default={})
+
+    @property
     def docker_hub_triggers(self):
         return self._get_configv('docker-hub-triggers')
 

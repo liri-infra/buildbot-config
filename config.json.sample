@@ -10,6 +10,18 @@
         "url": "",
         "channel": "#events"
     },
+    "docker-workers": {
+        "name": {
+            "host": "unix://var/run/docker.sock",
+            "image": "vendor/image:version",
+            "volumes": [
+                "/host:/container"
+            ],
+            "hostconfig": [
+                "network_mode": "container:master"
+            ]
+        }
+    },
     "docker-hub-triggers": [],
     "flatpak-gpg-key": ""
 }
