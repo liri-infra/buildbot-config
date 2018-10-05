@@ -54,7 +54,7 @@ class ImageBuildFactory(util.BuildFactory):
                     'livecd-creator', '--releasever=' + releasever,
                     '--config=livecd.ks', '--fslabel=' + imgname,
                     '--title', title, '--product=' + product,
-                    '--cache=cache'
+                    '--cache=/build/cache'
                 ],
             ),
             steps.ShellCommand(

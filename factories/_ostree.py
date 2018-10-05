@@ -38,7 +38,7 @@ class OSTreeBuildStep(steps.BuildStep, CompositeStepMixin):
                 initCmd = remotecommand.RemoteCommand('shell', {'command': cmd})
                 defer.returnValue(self.convertResult(initCmd))
         # Make tree
-        cmd = ['rpm-ostree', 'tree', '--repo=build-repo', '--cachedir=cache', self.treefile]
+        cmd = ['rpm-ostree', 'tree', '--repo=build-repo', '--cachedir=/build/cache', self.treefile]
         makeCmd = remotecommand.RemoteCommand('shell', {'command': cmd})
         defer.returnValue(self.convertResult(makeCmd))
 
