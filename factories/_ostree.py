@@ -1,46 +1,45 @@
 # -*- python -*-
 # ex: set filetype=python:
 
-from buildbot.process import remotecommand
+from buildbot.process import remotecommand, buildstep
 from buildbot.plugins import util, steps
-from buildbot.steps.worker import CompositeStepMixin
 from buildbot import locks
 from twisted.internet import defer
 
 import buildbot
-import os.path
+import os
 
 __all__ = [
     'OSTreeFactory',
 ]
 
 
-class OSTreeBuildStep(steps.BuildStep, CompositeStepMixin):
+class OSTreeBuildStep(buildstep.ShellMixin, steps.BuildStep):
     """
     Creates the OSTree repo if needed.
     """
     def __init__(self, treefile=None, **kwargs):
         self.treefile = treefile
+        self.setupShellMixin({'logEnviron': False,
+                              'timeout': 3600,
+                              'usePTY': True})
         steps.BuildStep.__init__(self, haltOnFailure=True, **kwargs)
+        self.title = 'Create OS tree'
 
     @defer.inlineCallbacks
     def run(self):
-        # Initialize OS tree
-        statCmd = remotecommand.RemoteCommand('stat', {'file': 'build-repo'})
-        yield self.runCommand(statCmd)
-        if statCmd.didFail():
-            mkdirCmd = remotecommand.RemoteCommand('mkdir', {'dir': 'build-repo'})
-            yield self.runCommand(mkdirCmd)
-            if mkdirCmd.didFail():
-                defer.returnValue(buildbot.process.results.FAILURE)
-            else:
-                cmd = ['ostree', 'init', '--repo=build-repo', '--mode=bare-user']
-                initCmd = remotecommand.RemoteCommand('shell', {'command': cmd})
-                defer.returnValue(self.convertResult(initCmd))
+        # Initialize build repo
+        cmd = ['ostree', 'init', '--repo=build-repo', '--mode=bare-user']
+        initCmd = yield self.makeRemoteShellCommand(command=cmd)
+        yield self.runCommand(initCmd)
+        if initCmd.didFail():
+            defer.returnValue(buildbot.process.results.FAILURE)
+            return
         # Make tree
         cmd = ['rpm-ostree', 'tree', '--repo=build-repo', '--cachedir=/build/cache', self.treefile]
-        makeCmd = remotecommand.RemoteCommand('shell', {'command': cmd})
-        defer.returnValue(self.convertResult(makeCmd))
+        makeCmd = yield self.makeRemoteShellCommand(command=cmd)
+        yield self.runCommand(makeCmd)
+        defer.returnValue(makeCmd.results())
 
 
 class OSTreeFactory(util.BuildFactory):
@@ -56,6 +55,7 @@ class OSTreeFactory(util.BuildFactory):
             steps.ShellCommand(
                 name='install tools',
                 haltOnFailure=True,
+                logEnviron=False,
                 command=['dnf', 'install', '-y', 'git', 'rpm-ostree'],
             ),
             steps.Git(
@@ -67,5 +67,35 @@ class OSTreeFactory(util.BuildFactory):
                 submodules=True,
                 shallow=True,
             ),
+            steps.FileDownload(
+                name='download build-repo.tar',
+                haltOnFailure=False,
+                mastersrc='/srv/ci/buildbot/data/ostree/build-repo.tar',
+                workerdest='build-repo.tar'
+            ),
+            steps.ShellCommand(
+                name='expand build-repo.tar',
+                haltOnFailure=False,
+                logEnviron=False,
+                command=['tar', 'xf', 'build-repo.tar'],
+            ),
             OSTreeBuildStep(name='create OS tree', treefile='lirios-{}-{}.json'.format(self.channel, self.treename)),
+            steps.ShellCommand(
+                name='archive build-repo',
+                haltOnFailure=True,
+                logEnviron=False,
+                command=['tar', 'cf', 'build-repo.tar', 'build-repo'],
+            ),
+            steps.FileUpload(
+                name='upload build-repo.tar',
+                haltOnFailure=True,
+                workersrc='build-repo.tar',
+                masterdest='/srv/ci/buildbot/data/ostree/build-repo.tar',
+            ),
+            steps.ShellCommand(
+                name='remove build-repo',
+                haltOnFailure=False,
+                logEnviron=False,
+                command=['rm', '-rf', 'build-repo', 'build-repo.tar'],
+            ),
         ])
