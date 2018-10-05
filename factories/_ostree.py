@@ -36,9 +36,9 @@ class OSTreeBuildStep(buildstep.ShellMixin, steps.BuildStep):
             defer.returnValue(buildbot.process.results.FAILURE)
             return
         # Make tree
-        mkdirCmd = yield self.makeRemoteShellCommand(command=['mkdir', '-p', '/build/cache'])
+        mkdirCmd = yield self.makeRemoteShellCommand(command=['mkdir', '-p', '../cache'])
         yield self.runCommand(mkdirCmd)
-        cmd = ['rpm-ostree', 'compose', 'tree', '--repo=build-repo', '--cachedir=/build/cache', self.treefile]
+        cmd = ['sudo', 'rpm-ostree', 'compose', 'tree', '--repo=build-repo', '--cachedir=../cache', self.treefile]
         makeCmd = yield self.makeRemoteShellCommand(command=cmd)
         yield self.runCommand(makeCmd)
         defer.returnValue(makeCmd.results())
@@ -59,8 +59,8 @@ class OSTreeFactory(util.BuildFactory):
                 haltOnFailure=True,
                 logEnviron=False,
                 commands=[
-                    util.ShellArg(command=['dnf', 'update', '-y'], logfile='stdio'),
-                    util.ShellArg(command=['dnf', 'install', '-y', 'git', 'rpm-ostree'], logfile='stdio'),
+                    util.ShellArg(command=['sudo', 'dnf', 'update', '-y'], logfile='stdio'),
+                    util.ShellArg(command=['sudo', 'dnf', 'install', '-y', 'git', 'rpm-ostree'], logfile='stdio'),
                 ],
             ),
             steps.Git(
