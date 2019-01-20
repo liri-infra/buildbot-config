@@ -21,7 +21,7 @@ class ImageBuildFactory(util.BuildFactory):
         today = datetime.date.today().strftime('%Y%m%d')
         title = 'Liri OS'
         product = 'lirios'
-        releasever = '28'
+        releasever = '29'
         imgname = '%s-%s-x86_64' % (product, today)
         isofilename = imgname + '.iso'
         checksumfilename = imgname + '-CHECKSUM'
