@@ -15,6 +15,10 @@ __all__ = [
 ]
 
 
+def IsCacheDisabled(step):
+    return not step.build.getProperty('cache', True)
+
+
 class ImagePropertiesStep(steps.BuildStep):
     def __init__(self, **kwargs):
         steps.BuildStep.__init__(self, **kwargs)
@@ -65,6 +69,11 @@ class ImageBuildFactory(util.BuildFactory):
                 name='ksflatten',
                 haltOnFailure=True,
                 command=['ksflatten', Interpolate('--config=%(prop:product)s-livecd.ks'), '-o', 'livecd.ks'],
+            ),
+            steps.RemoveDirectory(
+                name='clean cache',
+                dir='/build/cache',
+                doStepIf=IsCacheDisabled,
             ),
             steps.ShellCommand(
                 name='build image',
