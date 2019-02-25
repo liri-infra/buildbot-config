@@ -52,6 +52,11 @@ class ImageBuildFactory(util.BuildFactory):
         self.addSteps([
             ImagePropertiesStep(name='set properties'),
             steps.ShellCommand(
+                name='update container',
+                haltOnFailure=True,
+                command=['dnf', 'update', '-y'],
+            ),
+            steps.ShellCommand(
                 name='install tools',
                 haltOnFailure=True,
                 command=['dnf', 'install', '-y', 'git', 'spin-kickstarts', 'pykickstart', 'livecd-tools'],
