@@ -23,7 +23,7 @@ class DockerHubBuildFactory(util.BuildFactory):
                 if tag in available_tags:
                     build = True
             if build is True:
-                url = 'https://registry.hub.docker.com/u/%(name)s/trigger/%(token)s/' % info
+                url = 'https://cloud.docker.com/api/build/v1/source/%(uuid)s/trigger/%(token)s/call/' % info
                 steps_list.append(steps.POST(name='trigger rebuild %(name)s' % info, url=url, headers={'Content-type': 'application/json'}, data={'build': True}))
         if len(steps_list) > 0:
             self.addSteps(steps_list)
