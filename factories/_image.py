@@ -83,6 +83,7 @@ class ImageBuildFactory(util.BuildFactory):
             steps.ShellCommand(
                 name='build image',
                 haltOnFailure=True,
+                timeout=60*60,
                 command=[
                     'livecd-creator', '--releasever=' + releasever,
                     '--config=livecd.ks', Interpolate('--fslabel=%(prop:imgname)s'),
