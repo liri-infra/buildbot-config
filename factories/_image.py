@@ -47,7 +47,7 @@ class ImageBuildFactory(util.BuildFactory):
         util.BuildFactory.__init__(self, *args, **kwargs)
 
         title = 'Liri OS'
-        releasever = '29'
+        releasever = '30'
 
         self.addSteps([
             ImagePropertiesStep(name='set properties'),
